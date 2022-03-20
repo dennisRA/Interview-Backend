@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,8 +27,15 @@ namespace Moduit.Interview
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(a =>
+            {
+                a.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            }); ;
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Moduit.Interview", Version = "v1"}); });
+            services.AddHttpClient("screening", c =>
+            {
+                c.BaseAddress = new Uri("https://screening.moduit.id/backend/question/");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
